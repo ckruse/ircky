@@ -1,0 +1,9 @@
+{application, irckybot, [
+    {description, "irckybot"},
+    {vsn, "0.01"},
+    {modules, [
+        irckybot_app, irckybot_parser, irckybot_api, irc_lib
+    ]},
+    {mod, {irckybot_app, []}},
+    {applications, [kernel, stdlib]}]
+}.
