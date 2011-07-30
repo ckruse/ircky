@@ -53,6 +53,10 @@ handle_event(Msg, State) ->
                     Num = parse_num(StartEnd),
                     irckybot_api:privmsg(<<"#",Channel/binary>>, io_lib:format("I'm rolling a ~p", [Num]));
 
+                [Sender, _, <<"PRIVMSG">>, <<BNick:Len/binary>>, <<"!roll",StartEnd/binary>>] ->
+                    Num = parse_num(StartEnd),
+                    irckybot_api:privmsg(Sender, io_lib:format("I'm rolling a ~p", [Num]));
+
                 [_, _, <<"PRIVMSG">>, <<"#",Channel/binary>>, <<BNick:Len/binary,": roll",StartEnd/binary>>] -> %
                     Num = parse_num(StartEnd),
                     irckybot_api:privmsg(<<"#",Channel/binary>>, io_lib:format("I'm rolling a ~p", [Num]));

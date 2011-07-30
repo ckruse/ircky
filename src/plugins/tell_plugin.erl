@@ -57,11 +57,15 @@ handle_event(Msg, State) ->
             case Details of
                 [Sender, _, <<"PRIVMSG">>, <<"#",Channel/binary>>, <<"!tell ",Message/binary>>] ->
                     save(Channel, Sender, Message, State);
+                [Sender, _, <<"PRIVMSG">>, <<BNick:Len/binary>>, <<"!tell ",Message/binary>>] ->
+                    save(<<"Private">>, Sender, Message, State);
                 [Sender, _, <<"PRIVMSG">>, <<"#",Channel/binary>>, <<BNick:Len/binary,": tell ", Message/binary>>] ->
                     save(Channel, Sender, Message, State);
 
                 [Sender, _, <<"PRIVMSG">>, <<"#",Channel/binary>>, <<"!ask ",Message/binary>>] ->
                     save(Channel, Sender, Message, State);
+                [Sender, _, <<"PRIVMSG">>, <<BNick:Len/binary>>, <<"!ask ",Message/binary>>] ->
+                    save(<<"Private">>, Sender, Message, State);
                 [Sender, _, <<"PRIVMSG">>, <<"#",Channel/binary>>, <<BNick:Len/binary,": ask ", Message/binary>>] ->
                     save(Channel, Sender, Message, State);
 

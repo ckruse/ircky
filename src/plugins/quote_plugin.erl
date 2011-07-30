@@ -70,6 +70,10 @@ handle_event(Msg, State) ->
                     save_quote(State,Quote),
                     irckybot_api:notice(Nick, ["ok, saved quote"]);
 
+                [Nick, _, <<"PRIVMSG">>, <<BNick:Len/binary>>, <<"!addquote ",Quote/binary>>] ->
+                    save_quote(State,Quote),
+                    irckybot_api:notice(Nick, ["ok, saved quote"]);
+
                 [Nick, _, <<"PRIVMSG">>, _, <<"!addquote ",Quote/binary>>] ->
                     save_quote(State,Quote),
                     irckybot_api:notice(Nick, ["ok, saved quote"]);
