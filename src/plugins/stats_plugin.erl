@@ -16,19 +16,23 @@
 init(_Args) ->
     {ok, []}.
 
-uptime() ->
+get_uptime() ->
     {UpTime, _} = erlang:statistics(wall_clock),
     {Day, {Hour, Min, Sec}} = calendar:seconds_to_daystime(UpTime div 1000),
     lists:flatten(io_lib:format("~p days, ~p hours, ~p minutes and ~p seconds", [Day,Hour,Min,Sec])).
 
-memory() ->
+get_memory() ->
     M = proplists:get_value(total, erlang:memory()),
     lists:flatten(io_lib:format("memory: ~p kb", [M / 1000])).
 
-cputime() ->
+get_cputime() ->
     {CpuTime, _} = erlang:statistics(runtime),
     {Day, {Hour, Min, Sec}} = calendar:seconds_to_daystime(CpuTime div 1000),
     lists:flatten(io_lib:format("~p days, ~p hours, ~p minutes and ~p seconds", [Day,Hour,Min,Sec])).
+
+get_io() ->
+    {{input, Input}, {output, Output}} = erlang:statistics(io),
+    lists:flatten(io_lib:format("~p kb in, ~p kb out",[Input,Output])).
 
 handle_event(Msg, State) ->
     case Msg of
@@ -39,15 +43,15 @@ handle_event(Msg, State) ->
 
             case Details of
                 [_, _, <<"PRIVMSG">>, <<"#",Channel/binary>>, <<"!stats">>] ->
-                    irckybot_api:privmsg(<<"#",Channel/binary>>, ["Uptime: ", uptime(), "; Memory: ", memory(), "; CPU time: ", cputime()]),
+                    irckybot_api:privmsg(<<"#",Channel/binary>>, ["Uptime: ", get_uptime(), "; Memory: ", get_memory(), "; CPU time: ", get_cputime(),"; IO: ", get_io()]),
                     {ok, State};
 
                 [_, _, <<"PRIVMSG">>, <<"#",Channel/binary>>, <<BNick:Len/binary, ": stats">>] ->
-                    irckybot_api:privmsg(<<"#",Channel/binary>>, ["Uptime: ", uptime(), "; Memory: ", memory(), "; CPU time: ", cputime()]),
+                    irckybot_api:privmsg(<<"#",Channel/binary>>, ["Uptime: ", get_uptime(), "; Memory: ", get_memory(), "; CPU time: ", get_cputime(),"; IO: ", get_io()]),
                     {ok, State};
 
                 [Sender, _, <<"PRIVMSG">>, <<BNick:Len/binary>>, <<"!stats">>] ->
-                    irckybot_api:privmsg(Sender, ["Uptime: ", uptime(), "; Memory: ", memory(), "; CPU time: ", cputime()]),
+                    irckybot_api:privmsg(Sender, ["Uptime: ", get_uptime(), "; Memory: ", get_memory(), "; CPU time: ", get_cputime(),"; IO: ", get_io()]),
                     {ok, State};
 
                 _Other -> {ok, State}
