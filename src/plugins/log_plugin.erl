@@ -57,7 +57,7 @@ log_message(Dir, Sender, Who, Command, Target, Message) ->
         {ok, Fd} ->
             io:format(Fd,"~s~n",[irc_to_string(TStamp, Sender, Who, Target, Command, Message)]);
         Other ->
-            irckybot_api:privmsg(<<"#",Target/binary>>, ["Could not write to logfile ", File, ": ", Other])
+            irckybot_api:privmsg(Target, ["Could not write to logfile ", File, ": ", Other])
     end.
 
 check_channels(_, []) ->
